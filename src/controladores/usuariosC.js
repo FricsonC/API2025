@@ -8,6 +8,7 @@ try {
     const [result]= await conmysql.query(' select *from usuarios ')
     res.json({can:result.length, data:result})
 } catch (error){
+    console.log(error);
     return res.status(500).json({message: " error en el servidor "})
 }
 }

@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import authRoutes from './routers/authR.js' //IMPORTACION
 
 //para subir imagenes
 import path from 'path'
@@ -38,6 +39,7 @@ app.use('/api', pedidos_detalleRoutes)
 app.use('/api', usuariosRoutes)
 app.use('/api',productosRoutes)
 
+app.use('/api', authRoutes)  //IMPORTACION
 
 
 app.use((req,resp,next)=>{

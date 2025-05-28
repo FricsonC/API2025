@@ -1,7 +1,7 @@
 import{Router} from 'express'
 import multer from 'multer';
 
-import { deleteProductos, getProductos, getProductosporid, patchProductos, postProdu, putProductos } from '../controladores/productosC.js'
+import { deleteProductosporid, getProductos, getProductosporid, patchProdu, postProdu, putProdu } from '../controladores/productosC.js'
 
 //configurar multer para almacenar las imagenes
 const storage=multer.diskStorage({
@@ -21,8 +21,8 @@ router.get('/productos',getProductos)
 router.get('/productos/:id', getProductosporid)
 //router.post('/productos', uploads.single('prod_imagen'), postProductos)
 router.post('/productos', uploads.single('prod_imagen'), postProdu)
-router.put('/productos/:id', putProductos)
-router.patch('/productos/:id',patchProductos)
-router.delete('/productos/:id', deleteProductos)
+router.put('/productos/:id', uploads.single('prod_imagen'),putProdu)
+router.patch('/productos/:id',uploads.single('prod_imagen'), patchProdu)
+router.delete('/productos/:id', deleteProductosporid)
 
 export default router
