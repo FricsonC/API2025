@@ -28,20 +28,27 @@ export const getUsuariosporid=async(req,res)=>{
     }
     }
 
-    export const postUsuarios=async(req,res)=>{
-        try{
-            const{usr_usuario, usr_clave, usr_nombre, usr_telefono, usr_correo, usr_activo}=req.body
-            //console.log(req.body)
-            const [result]= await conmysql.query(
-                ' INSERT INTO usuarios (usr_usuario, usr_clave, usr_nombre, usr_telefono, usr_correo, usr_activo) VALUES(?, ?, ?, ?, ?, ?) ', 
-                [usr_usuario, usr_clave, usr_nombre, usr_telefono, usr_correo, usr_activo])
-                res.send({
-                    id:result.insertId
-                })
-        }catch(error){
-            return res.status(500).json({message: " error en el servidor "})
-        }
+export const postUsuarios = async (req, res) => {
+  try {
+    const { usr_usuario, usr_clave, usr_nombre, usr_telefono, usr_correo } = req.body;
+
+    if (!usr_usuario || !usr_clave) {
+      return res.status(400).json({ message: "usr_usuario y usr_clave son obligatorios" });
     }
+
+    // Fuerza usr_activo = 1 siempre
+    const usr_activo = 1;
+
+    const [result] = await conmysql.query(
+      'INSERT INTO usuarios (usr_usuario, usr_clave, usr_nombre, usr_telefono, usr_correo, usr_activo) VALUES (?, ?, ?, ?, ?, ?)',
+      [usr_usuario, usr_clave, usr_nombre, usr_telefono, usr_correo, usr_activo]
+    );
+    res.send({ id: result.insertId });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "error en el servidor" });
+  }
+};
 
     //Funcion que permite modificar un cliente
     export const putUsuarios=async(req,res)=>{
