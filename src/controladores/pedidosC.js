@@ -27,20 +27,33 @@ export const getPedidosporid=async(req,res)=>{
     }
     }
 
-    export const postPedidos=async(req,res)=>{
+   export const postPedidos=async(req,res)=>{
         try{
-            const{ped_fecha, ped_estado}=req.body
+            const{cli_id, usr_id, ped_fecha, ped_estado, productos}=req.body
             //console.log(req.body)
-            const [result]= await conmysql.query(
-                ' INSERT INTO pedidos (ped_fecha, ped_estado) VALUES(?, ?) ', 
-                [ped_fecha, ped_estado])
-                res.send({
-                    id:result.insertId
-                })
+            //insertamos el pedidos
+            const [pedidoResult]= await conmysql.query(
+                ' INSERT INTO pedidos (cli_id, usr_id, ped_fecha, ped_estado) VALUES(?, ?, ?, ?) ', 
+                [cli_id, usr_id, ped_fecha, ped_estado]);
+
+                const pedidoId = pedidoResult.insertId;
+
+                //insertamos los productos en la tabla detalle_pedido
+                for (const producto of productos){
+                    const { prod_id, det_cantidad, det_precio} = producto;
+                    await conmysql.query(
+                        'INSERT INTO detalle_pedidos (ped_id, prod_id, det_cantidad, det_precio) VALUES (?, ?, ?, ?)',
+                        [pedidoId, prod_id, det_cantidad, det_precio]
+                    );
+                }
+                
+                res.status(201).json({ped_id: pedidoId, message: 'Pedido registrado con éxito' });
+                
         }catch(error){
-            return res.status(500).json({message: " error en el servidor "})
+            console.error(error);
+            return res.status(500).json({message: " Error al registrar el pedido "})
         }
-    }
+    };
 
     //Funcion que permite modificar un cliente
     export const putPedidos=async(req,res)=>{
